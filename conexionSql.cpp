@@ -3,6 +3,10 @@
 //sudo apt-get install libmysql++-dev
 //sudo apt-get install libmysql++3 --> esta no es tan necesaria
 
+//La linea para poder correrlo es por este
+
+//  g++ -o main conexionSql.cpp  -L/usr/include/mysql -lmysqlclient  -I/usr/include/mysql
+
 #include<iostream>
 #include<mysql.h>
 #include<stdio.h>
