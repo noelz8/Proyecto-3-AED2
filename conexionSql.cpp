@@ -7,6 +7,7 @@
 
 //  g++ -o main conexionSql.cpp  -L/usr/include/mysql -lmysqlclient  -I/usr/include/mysql
 
+
 #include<iostream>
 #include<mysql.h>
 #include<stdio.h>
@@ -43,6 +44,8 @@ cout<<"connection failed\n";
 
 MYSQL_RES *res_set;
 MYSQL_ROW row;
+
+mysql_query (connect,"INSERT INTO tb_datos (ID, Nombre) VALUES ('3', 'Jose'), ('4', 'Monica');");
 mysql_query (connect,"select * from tb_datos;");
 unsigned int i =0;
 res_set = mysql_store_result(connect);
