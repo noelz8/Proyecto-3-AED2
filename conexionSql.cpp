@@ -3,60 +3,57 @@
 //sudo apt-get install libmysql++-dev
 //sudo apt-get install libmysql++3 --> esta no es tan necesaria
 
-#include <iostream>
-#include <stdlib.h>
-#include <mysql/mysql.h>
+#include<iostream>
+#include<mysql.h>
+#include<stdio.h>
 
 using namespace std;
 
-struct connection_details{
-    const char *server, *user, *password, *database;
-};
+#define SERVER "localhost"
+#define USER "root"
+#define PASSWORD "123"
+#define DATABASE "db_pruebas"
 
-//Esta configuración toma la conexión a la base de Mysql
-MYSQL* mysql_connection_setup(struct connection_details mysql_details){
-    MYSQL *connection = mysql_init(NULL);
+int main()
+{
 
-    //Caso de error
-    if (!mysql_real_connect(connection, mysql_details.server, mysql_details.user, mysql_details.password,
-    mysql_details.database, 0, NULL, 0)){
-        cout << "Error en la conexión a la base de datos: " << mysql_error(connection);
-        exit(1);
-    }
-    return connection;
+MYSQL *connect;
+connect=mysql_init(NULL);
+
+if (!connect)
+{
+cout<<"MySQL Initialization failed";
+return 1;
 }
 
-MYSQL_RES* mysql_execute_query(MYSQL *connection, const char *sql_query){
-    //Cado de error
-    if (mysql_query(connection, sql_query)){
-        cout << "Error en la consulta: " << mysql_error(connection);
-        exit(1);
-    }
-    return mysql_use_result(connection);
+connect=mysql_real_connect(connect, "localhost", "root", "123" , "db_pruebas" ,0,NULL,0);
+
+if (connect)
+{
+cout<<"connection Succeeded\n";
+}
+else
+{
+cout<<"connection failed\n";
 }
 
-int main(){
-    
-    MYSQL *conx;
-    MYSQL_RES *res;
-    MYSQL_ROW  row;
+MYSQL_RES *res_set;
+MYSQL_ROW row;
+mysql_query (connect,"select * from tb_datos;");
+unsigned int i =0;
+res_set = mysql_store_result(connect);
+unsigned int numrows = mysql_num_rows(res_set);
 
-    //Referenciamos la conexion
-    struct connection_details _contexMysql;
-    _contexMysql.server = "localhost";
-    _contexMysql.user = "root";
-    _contexMysql.password = "123";
-    _contexMysql.database = "db_pruebas";
+cout << endl;
+cout <<"\t --------------------------------------------------------------------- \t"<< endl;
 
-    conx = mysql_connection_setup(_contexMysql);
-    res = mysql_execute_query(conx, "SELECT * from tb_datos;");
-    //cout << res;
+while (((row= mysql_fetch_row(res_set)) !=NULL ))
+{ //cout<<" %s\n",row[i] !=NULL?row[i] : "NULL";
 
-    mysql_free_result(res);
-    mysql_close(conx);
-
-    return 0;
+cout <<"\t | \t" << row[i] << "\t | \t"<<  row[i+1] << "\t | \t"<< row[i+2] << "\t | \t" << endl;
+cout <<"\t --------------------------------------------------------------------- \t"<< endl;
 }
 
-
-
+mysql_close (connect);
+return 0;
+}
