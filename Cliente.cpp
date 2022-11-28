@@ -9,25 +9,12 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #define SIZE 1024
-
 using namespace std;
 
-//Funcion que envia el archivo.
-void send_file(FILE *fp, int sockfd){
-
-    int n;
-    char data[SIZE] = {0};
-
-    while(fgets(data, SIZE, fp) != NULL){
-        if(send(sockfd, data, sizeof(data), 0) == -1){
-            perror("[-]Error al enviar el archivo");
-            exit(1);
-        }
-        bzero(data, SIZE);
-    }
-} 
+string dataFull;
 
 string filename1;
+
 
 int main(){
     char *ip = "127.0.0.1";
@@ -38,12 +25,19 @@ int main(){
     int sockfd;
     FILE *fp;
     char filename[SIZE];
+    char palab[SIZE];
+
+    string palabra;
+
     printf("Ingrese la ubicacion del archivo a enviar.\n");
     getline(cin, filename1);
     strcpy(filename, filename1.c_str());
+    printf("Ingrese un apalabra\n");
+    getline(cin, palabra);
+    //strcpy(palab, palabra.c_str());
 
 
-
+    cout << "nueva : " << palabra;
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0){
         perror("[-]Error en socket");
@@ -56,9 +50,6 @@ int main(){
     hint.sin_port = htons(puerto);
     inet_pton(AF_INET, ip, &hint.sin_addr);
     
-
-
-
     coneccion = connect(sockfd, (struct sockaddr*)&hint, sizeof(hint));
     if(coneccion == -1){
         perror("[-]Error en el socket");
@@ -73,11 +64,27 @@ int main(){
         exit(1);
     }
 
-    send_file(fp, sockfd);
+    int n;
+    char data[SIZE] = {0};
+    dataFull += "init,";
+
+    //Guardar archivo en estring
+    while(fgets(data, SIZE, fp) != NULL){
+
+        string s(data);
+        dataFull += s;
+        cout << "(" << data << ")\n";
+        cout << " * " << dataFull << "*\n";  
+    }
+
+    int senRes = send(sockfd, dataFull.c_str(), dataFull.size() + 1, 0);
+
+    //bzero(dataFull, SIZE);
+
+
     printf("[+]Archivo enviado.\n");
 
     printf("[+]Cerrando conexion.\n");
-   
 
     return 0;
 

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <sys/socket.h>
 #include <netdb.h>
-
+using namespace std;
 #define SIZE 1024
 
 //Funcion para escribir en el archivo
@@ -24,8 +24,10 @@ void write_file(int sockfd){
             return;
         }
         fprintf(fp, "%s", buffer);
-        bzero(buffer, SIZE);
+        bzero(buffer, SIZE);       
     }
+    cout << "(" << buffer << ")";
+    cout << "***";
     return;
 
 }
@@ -37,7 +39,6 @@ int main(){
     int unir;
 
     int sockfd, new_sock;
-
 
     socklen_t addr_size;
     char buffer[SIZE];
@@ -59,6 +60,7 @@ int main(){
     inet_pton(AF_INET, ip, &hint.sin_addr);
 
     unir = bind(sockfd, (struct sockaddr*)&hint, sizeof(hint));
+
     if (unir < 0){
         perror("[ERROR AL UNIR]");
         exit(1);
@@ -80,6 +82,7 @@ int main(){
 
     write_file(new_sock);
     printf("[+]Informacion recibida exitosamente");
+    cout << "( "<< buffer << " )" << "Se imprime";
 
     return 0;
 }
