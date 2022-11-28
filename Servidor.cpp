@@ -29,7 +29,6 @@ void write_file(int sockfd){
     cout << "(" << buffer << ")";
     cout << "***";
     return;
-
 }
 
 int main(){
@@ -43,9 +42,7 @@ int main(){
     socklen_t addr_size;
     char buffer[SIZE];
 
-
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
 
     if(sockfd < 0){
         perror("[-]ERROR IN SOCKET");
@@ -66,7 +63,6 @@ int main(){
         exit(1);
     }
     printf("[+]Asociacion entre la direccion ip y el puerto completa. \n");
-
 
     if(listen(sockfd, 10) == 0){
         printf("[+]Esperando conexion...\n");
