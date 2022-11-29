@@ -13,9 +13,7 @@
 using namespace std;
 
 string dataFull;
-
 string filename1;
-
 
 int main(int argc, char *argv[]){   
     //Variables necesarias para el ingreso de comandos
@@ -23,6 +21,7 @@ int main(int argc, char *argv[]){
                *comando2 = argv[2],
                *comando3 = argv[3],
                *comando4 = argv[4];
+
     char *ip = "127.0.0.1";
     //int puerto = 8080;
     int coneccion;
@@ -49,6 +48,7 @@ int main(int argc, char *argv[]){
             exit(1);
 
         }else{
+
             cout << "-------------------------------------------------------------------------------------------\n";
             cout << "|got help: Muestra los comandos y sus funciones                                             \n";
             cout << "-------------------------------------------------------------------------------------------\n";
@@ -65,8 +65,7 @@ int main(int argc, char *argv[]){
             cout << "|got reset <file> : Deshace cambios locales para un archivo y lo regresa al ultimo commit    \n";
             cout << "-------------------------------------------------------------------------------------------\n";
             cout << "|got sync <file> : Recupera los cambios para un archivo en el server y lo sincroniza con el archivo en el cliente\n";
-            cout << "-------------------------------------------------------------------------------------------\n";
-                    
+            cout << "-------------------------------------------------------------------------------------------\n";          
         }
 
     }else if (argc == 4)
@@ -79,16 +78,23 @@ int main(int argc, char *argv[]){
 
         }else{
 
-            if (string(comando2) != "init"){
-                cout << " El segundo argumento no es valido \n";
-                cout << " Verifique escribir bien ** got init **";
-                exit(1);
-
+            if (string(comando2) == "init"){
+                //Lo que hace el init
+            }else if (string(comando2) == "add"){
+                //Lo que hace el add
+            }else if (string(comando2) == "commit"){
+                //Lo que hace el commit
+            }else if (string(comando2) == "status"){
+                //Lo que hace el status
+            }else if (string(comando2) == "reset"){
+                //Lo que hace el reset
+            }else if (string(comando2) == "sync"){
+                //Lo que hace el sync
             }else{
-                //d
+                cout << " El segundo argumento no es valido \n";
+                cout << " Verifique escribir bien ** got init lista de comandos necesaria ------**";
+                exit(1);
             }
-
- 
         }
         
     }else if (argc == 5)
