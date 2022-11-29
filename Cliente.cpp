@@ -53,6 +53,53 @@ int main(int argc, char *argv[]){
 
         }else{
 
+            //Se conecta o muestra error en dado caso
+            sockfd = socket(AF_INET, SOCK_STREAM, 0);
+            if (sockfd < 0){
+                perror("[-]Error en socket");
+                exit(1);
+            }
+
+            printf("[+]Socket creado correctamente \n");
+
+            //importante para la coneción al servidor y cliente
+            sockaddr_in hint;
+            hint.sin_family = AF_INET;
+            hint.sin_port = htons(puerto);
+            inet_pton(AF_INET, ip, &hint.sin_addr);
+
+            //Coneción por socket
+            coneccion = connect(sockfd, (struct sockaddr*)&hint, sizeof(hint));
+            if(coneccion == -1){
+                perror("[-]Error en el socket");
+                exit(1);
+            }
+            printf("[+]Conectando al servidor\n");
+
+
+            int n;
+            char data[SIZE] = {0};
+
+            //Se guarda el comando y el mensaje 
+            dataComando2 += string(comando2);
+
+            //Se envia mensaje al servidor con el comando
+            int senRes = send(sockfd, dataComando2.c_str(), dataComando2.size() + 1, 0);
+
+            printf("[+]Comendo enviado.\n");
+
+            memset(buf, 0, SIZE);
+
+            //Validación en caso de tener algún problema
+            int bytesReceived2 = recv(sockfd, buf, 4096, 0);
+            if (bytesReceived2 == -1)
+            {
+                cout << "Ocurrio un error obteniendo la respuesta del servidor\r\n";
+            }
+
+            //Respuesta desde el servidor
+            cout << "SERVER> " << string(buf, bytesReceived2) << "\r\n";
+
             cout << "-------------------------------------------------------------------------------------------\n";
             cout << "*got help: Muestra los comandos y sus funciones.                                             \n";
             cout << "-------------------------------------------------------------------------------------------\n";
@@ -75,6 +122,7 @@ int main(int argc, char *argv[]){
             cout << "*got sync <file> : Recupera los cambios para un archivo en el server y lo sincroniza\n";
             cout << " con el archivo en el cliente. El tercer argumento debe ser un string(" ").\n";
             cout << "-------------------------------------------------------------------------------------------\n";          
+            printf("[+]Cerrando conexion.\n");
         }
 
     }else if (argc == 4)

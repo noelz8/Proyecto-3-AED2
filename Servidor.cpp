@@ -28,7 +28,7 @@ using namespace std;
 #define SERVER "localhost"
 #define USER "root"
 #define PASSWORD "123"
-#define DATABASE "db_Got"
+#define DATABASE "db_pruebas"
 
 /**
 * @brief Funciones del Servidor de aquí en adelante 
@@ -86,8 +86,8 @@ int main()
     cout<<"MySQL Initialization failed";
     return 1;
     }
-    
-    connect=mysql_real_connect(connect, "localhost", "root", "123" , "db_Got", 0, NULL, 0);
+
+    connect=mysql_real_connect(connect, "localhost", "root", "123" , "db_pruebas", 0, NULL, 0);
 
     if (connect)
     {
@@ -97,6 +97,10 @@ int main()
     {
     cout<<"connection failed\n";
     }
+
+    // Variables necesarias para la conexión y contar las columnas mysql
+    MYSQL_RES *res_set;
+    MYSQL_ROW row;
 
     // Se crea el socket
     int listening = socket(AF_INET, SOCK_STREAM, 0);
@@ -196,19 +200,32 @@ int main()
         ParametroString = buf2;
 
         /**
-         * @brief Funciones del init
-         * 
-         * 
+         * @brief Funciones del help
          */
 
-        if (comandostring == "init"){
-            cout << comandostring << " Hace esta función\n";
+        if (comandostring == "help"){
+            cout << comandostring << "\n Datos de comandos y ayudas \n";
 
+            //mysql_query (connect,"INSERT INTO tb_help (COMANDO, DESCRIC) VALUES ('help', 'Muestra la ayuda'), ('add', 'añade un archivo');");
+            mysql_query (connect,"select * from tb_help;");
+            unsigned int i =0;
+            res_set = mysql_store_result(connect);
+            unsigned int numrows = mysql_num_rows(res_set);
+
+            cout << endl;
+            cout <<" ---------------------------------------------------------------- \t"<< endl;
+
+            while (((row= mysql_fetch_row(res_set)) !=NULL ))
+            { 
+            cout <<" | \t" << row[i] << "\t | \t"<<  row[i+1] << "\t | \t"<< row[i+2] << "\t | \t" << endl;
+            cout <<" ---------------------------------------------------------------- \t"<< endl;
+            }
+
+            mysql_close (connect);
             //Envio de mensaje al cliente s
-            char *mensaje2 = "Repositorio creado exitosamente";
+            char *mensaje2 = "Los comando de ayuda se desplegaron correctamente";
             send(clientSocket, mensaje2, strlen(mensaje2) + 1, 0);  
         }
- 
     }
 
     //Finaliza la conexión

@@ -52,13 +52,13 @@ res_set = mysql_store_result(connect);
 unsigned int numrows = mysql_num_rows(res_set);
 
 cout << endl;
-cout <<"\t --------------------------------------------------------------------- \t"<< endl;
+cout <<"\t ---------------------------------------------------------------- \t"<< endl;
 
 while (((row= mysql_fetch_row(res_set)) !=NULL ))
 { //cout<<" %s\n",row[i] !=NULL?row[i] : "NULL";
 
 cout <<"\t | \t" << row[i] << "\t | \t"<<  row[i+1] << "\t | \t"<< row[i+2] << "\t | \t" << endl;
-cout <<"\t --------------------------------------------------------------------- \t"<< endl;
+cout <<"\t ---------------------------------------------------------------- \t"<< endl;
 }
 
 mysql_close (connect);
