@@ -79,7 +79,41 @@ int main(int argc, char *argv[]){
         }else{
 
             if (string(comando2) == "init"){
-                //Lo que hace el init
+                
+                cout << "nueva : " << palabra;
+                sockfd = socket(AF_INET, SOCK_STREAM, 0);
+                if (sockfd < 0){
+                    perror("[-]Error en socket");
+                    exit(1);
+                }
+
+                printf("[+]Socket creado correctamente \n");
+
+                sockaddr_in hint;
+                hint.sin_family = AF_INET;
+                hint.sin_port = htons(puerto);
+                inet_pton(AF_INET, ip, &hint.sin_addr);
+        
+                coneccion = connect(sockfd, (struct sockaddr*)&hint, sizeof(hint));
+                if(coneccion == -1){
+                    perror("[-]Error en el socket");
+                    exit(1);
+                }
+                printf("[+]Conectando al servidor\n");
+
+
+                int n;
+                char data[SIZE] = {0};
+                dataFull += string(comando2);
+                dataFull += ",";
+
+
+                int senRes = send(sockfd, dataFull.c_str(), dataFull.size() + 1, 0);
+
+                printf("[+]Archivo enviado.\n");
+
+                printf("[+]Cerrando conexion.\n");
+
             }else if (string(comando2) == "add"){
                 //Lo que hace el add
             }else if (string(comando2) == "commit"){
@@ -100,12 +134,12 @@ int main(int argc, char *argv[]){
     }else if (argc == 5)
     {
         /* code */
+
     }else{
         cout << "Error al ingresar el comando...\n";
         cout << " consultar comando  ** got help **\n";
         exit(1);
     }
-
     return 0;
 }
 
