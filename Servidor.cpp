@@ -15,11 +15,26 @@
 #include <string.h>
 #include <string>
 
+#include<iostream>
+#include<mysql/mysql.h>
+#include<stdio.h>
+
 #include <cmath>
 
 using namespace std;
 #define SIZE 1024
 #define puerto 8080
+
+#define SERVER "localhost"
+#define USER "root"
+#define PASSWORD "123"
+#define DATABASE "db_Got"
+
+/**
+* @brief Funciones del Servidor de aquí en adelante 
+* 
+* 
+*/
 
 //Funcion para escribir en el archivo
 void write_file(int sockfd){
@@ -39,28 +54,49 @@ void write_file(int sockfd){
         fprintf(fp, "%s", buffer);
         bzero(buffer, SIZE);       
     }
-    //cout << "(" << buffer << ")";
-    //cout << "***";
     return;
 }
 
 int main()
 {
     //Variables necesarias
+
+    //Conexion cliente servidor
     char *ip = "127.0.0.1";
 
     int unir;
-
     int sockfd, new_sock;
-
     socklen_t addr_size;
 
+    //conexion mysql
+    MYSQL *connect;
+    connect=mysql_init(NULL);
+
+    //Guardar los datos
     char buf[SIZE];
     char buf2[SIZE];
     char fact[4096];
 
     string comandostring = "";
-    string segundoDato = "";
+    string ParametroString = "";
+
+    //Se crea la conexion a Mysql
+    if (!connect)
+    {
+    cout<<"MySQL Initialization failed";
+    return 1;
+    }
+    
+    connect=mysql_real_connect(connect, "localhost", "root", "123" , "db_Got", 0, NULL, 0);
+
+    if (connect)
+    {
+    cout<<"connection Succeeded\n";
+    }
+    else
+    {
+    cout<<"connection failed\n";
+    }
 
     // Se crea el socket
     int listening = socket(AF_INET, SOCK_STREAM, 0);
@@ -84,7 +120,6 @@ int main()
 
     if(listen(listening, 10) == 0){
         printf("[+]Esperando conexion...\n");
-
     }else{
         perror("[-]Error al escuchar");
         exit(1);
@@ -118,9 +153,10 @@ int main()
     close(listening);
     
     char *path;
+    //Este while recibe los datos del cliente y manda lo necesario
     while (true)
-    {
-        
+    {   
+        //
         memset(buf, 0, SIZE);
         memset(buf2, 0, SIZE);
         memset(fact, 0, 4096);
@@ -129,101 +165,53 @@ int main()
 
         // Esperando a que el cliente envie el mensaje
         int bytesReceived = recv(clientSocket, buf, 4096, 0);
-        if (bytesReceived == -1)
-        {
+        if (bytesReceived == -1){
             cerr << "Error in recv(). Quitting" << endl;
             break;
         }
- 
-        if (bytesReceived == 0)
-        {
+        //En caso de error
+        if (bytesReceived == 0){
             cout << "Client disconnected " << endl;
             break;
         }
-        cout << buf << "**1\n";
+        //Le pasamos el comando char a un string global
         comandostring = buf;
         
+        //Envio de mensaje al cliente 
         char *mensaje = "Comando aceptado exitosamente";
-
         send(clientSocket, mensaje, strlen(mensaje) + 1, 0);
 
-
+        //Recibir el parametro desde el cliente
         int bytes2 = recv(clientSocket, buf2, 4096, 0);
-        if (bytes2 == -1){
-            
+        if (bytes2 == -1){ 
             cerr << "Error al recibir" << endl;
             break;
         }
-
+        //En caso de error
         if (bytes2 == 0){
-            
-            cout << "Cliente desconectado " << endl;
-            
+            cout << "Cliente desconectado " << endl;  
         }
 
-        cout << buf2 << "**2\n";
-        segundoDato = buf2;
+        //Le pasamos el comando char a un string global
+        ParametroString = buf2;
 
-        char *mensaje2 = "Parametro aceptado exitosamente";
+        /**
+         * @brief Funciones del init
+         * 
+         * 
+         */
 
-        send(clientSocket, mensaje2, strlen(mensaje2) + 1, 0);
+        if (comandostring == "init"){
+            cout << comandostring << " Hace esta función\n";
 
-        /*char *men = "Hola";
-        
-        send(clientSocket, men, strlen(men) + 1, 0);
-
-        int bytes2 = recv(clientSocket, buf2, 4096, 0);
-
-        if (bytes2 == -1){
-            
-            cerr << "Error al recibir" << endl;
-            break;
+            //Envio de mensaje al cliente s
+            char *mensaje2 = "Repositorio creado exitosamente";
+            send(clientSocket, mensaje2, strlen(mensaje2) + 1, 0);  
         }
-
-        if (bytes2 == 0){
-            
-            cout << "Cliente desconectado " << endl;
-            
-        }
-
-        if(string(buf2, 0, bytes2)=="1"){
-
-            image.gaussianBlur(buf);
-            break;
-        }
-
-        if(string(buf2, 0, bytes2)=="2"){
-
-            image.gray_scale(buf);
-            break;
-        }
-
-        if(string(buf2, 0, bytes2)=="3"){
-
-            send(clientSocket, factor, strlen(factor)+1, 0);
-            int facts = recv(clientSocket, fact, 4096, 0);
-            image.brightControl(buf, stoi(fact));
-            break;
-            
-
-
-        }
-
-        if (string(buf2, 0, bytes2)=="4"){
-
-            send(clientSocket, gamma, strlen(gamma)+1, 0);
-            int facts = recv(clientSocket, fact, 4096, 0);
-            image.gammaCorrection(buf, stoi(fact));
-            break;
-        }*/
-   
-    }
-    //cout << completString << "**2\n";
-    // Close the socket
-    close(clientSocket);
-
-    //cout << completString << "**3\n";
  
+    }
 
+    //Finaliza la conexión
+    close(clientSocket);
     return 0;
 }
