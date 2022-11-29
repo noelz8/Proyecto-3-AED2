@@ -5,8 +5,11 @@
 #include <iostream>
 #include <sys/socket.h>
 #include <netdb.h>
+
 using namespace std;
+
 #define SIZE 1024
+#define puerto 8080
 
 //Funcion para escribir en el archivo
 void write_file(int sockfd){
@@ -24,30 +27,32 @@ void write_file(int sockfd){
             return;
         }
         fprintf(fp, "%s", buffer);
-        bzero(buffer, SIZE);       
+        bzero(buffer, SIZE);  
+        cout << (buffer[SIZE]) << "Datos";     
     }
-    cout << "(" << buffer << ")";
-    cout << "***";
+
+    cout << buffer;
     return;
 }
 
 int main(){
 
     char *ip = "127.0.0.1";
-    int puerto = 8080;
+    //int puerto = 8080;
     int unir;
 
     int sockfd, new_sock;
 
     socklen_t addr_size;
-    char buffer[SIZE];
+    char buffer[4096];
 
+    //Se crea el socketaa
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
     if(sockfd < 0){
         perror("[-]ERROR IN SOCKET");
         exit(1);
-    }
+    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 
     printf("El socket se ha conectado satisfactoriamente. \n");
 
@@ -56,7 +61,7 @@ int main(){
     hint.sin_port = htons(puerto);
     inet_pton(AF_INET, ip, &hint.sin_addr);
 
-    unir = bind(sockfd, (struct sockaddr*)&hint, sizeof(hint));
+    unir = bind(sockfd, (sockaddr*)&hint, sizeof(hint));
 
     if (unir < 0){
         perror("[ERROR AL UNIR]");
@@ -71,14 +76,17 @@ int main(){
         perror("[-]Error al escuchar");
         exit(1);
     }
+    
     sockaddr_in new_addr;
     addr_size = sizeof(new_addr);
 
-    new_sock = accept(sockfd, (struct sockaddr*)&new_addr, &addr_size);
+    new_sock = accept(sockfd, (sockaddr*)&new_addr, &addr_size);
 
-    write_file(new_sock);
+    int n = recv(sockfd, buffer, SIZE, 0);
+    cout << buffer;
+    
+    //write_file(new_sock);
     printf("[+]Informacion recibida exitosamente");
-    cout << "( "<< buffer << " )" << "Se imprime";
 
     return 0;
 }

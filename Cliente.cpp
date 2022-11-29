@@ -183,9 +183,7 @@ int main(int argc, char *argv[]){
                 cout << " consultar comando  * got help *\n";
                 exit(1);
             }
-        }
-        /* code */
-
+        }    
     }else{
         cout << "Error al ingresar el comando...\n";
         cout << " consultar comando  * got help *\n";
