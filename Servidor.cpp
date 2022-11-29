@@ -226,9 +226,23 @@ int main()
             char *mensaje2 = "Los comando de ayuda se desplegaron correctamente";
             send(clientSocket, mensaje2, strlen(mensaje2) + 1, 0);  
         }
+
         if (comandostring == "init"){
-            cout << comandostring << "\n Se crea nuevo repopositorio \n";
-            cout << ParametroString << "\n El parametro \n";
+            cout << "\n Se crea nuevo repopositorio \n";
+            
+            string linescomando = "Create table tb_" + ParametroString + " (ID INT NOT NULL AUTO_INCREMENT, NOMBRE VARCHAR(50) NOT NULL, PRIMARY KEY (ID));";
+            mysql_query (connect, linescomando.c_str());
+            unsigned int i =0;
+
+            mysql_close (connect);
+            //Envio de mensaje al cliente s
+            char *mensaje2 = "Se ha creado nuevo repositorio ";
+            send(clientSocket, mensaje2, strlen(mensaje2) + 1, 0); 
+        }
+
+        //Prueba add
+        if (comandostring == "add"){
+            cout << "\n Se crea nuevo repopositorio \n";
             
             string linescomando = "Create table tb_" + ParametroString + " (ID INT NOT NULL AUTO_INCREMENT, NOMBRE VARCHAR(50) NOT NULL, PRIMARY KEY (ID));";
             mysql_query (connect, linescomando.c_str());

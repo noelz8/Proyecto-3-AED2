@@ -162,7 +162,6 @@ int main(int argc, char *argv[]){
                 }
                 printf("[+]Conectando al servidor\n");
 
-
                 int n;
                 char data[SIZE] = {0};
 
