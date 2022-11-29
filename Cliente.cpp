@@ -49,7 +49,24 @@ int main(int argc, char *argv[]){
             exit(1);
 
         }else{
-            //dddd
+            cout << "-------------------------------------------------------------------------------------------\n";
+            cout << "|got help: Muestra los comandos y sus funciones                                             \n";
+            cout << "-------------------------------------------------------------------------------------------\n";
+            cout << "|got init <name>: Instancia un nuevo repositio                                              \n";
+            cout << "-------------------------------------------------------------------------------------------\n";
+            cout << "|got add [-A] / [path]: [-A] para agregar todos los archivos, o la ruta del archivo para guardar uno en especifico | \n";
+            cout << "-------------------------------------------------------------------------------------------\n";
+            cout << "|got commit <mensaje> : Envia los archivos agregados y pendientes                           \n";
+            cout << "-------------------------------------------------------------------------------------------\n";
+            cout << "|got status : Nos muestra cuales archivos han sido cambiados, agregados o eliminados        \n";
+            cout << "-------------------------------------------------------------------------------------------\n";
+            cout << "|got rollback <file> <commit> : Permite regresar un archivo en el tiempo a un commit especifico \n";
+            cout << "-------------------------------------------------------------------------------------------\n";
+            cout << "|got reset <file> : Deshace cambios locales para un archivo y lo regresa al ultimo commit    \n";
+            cout << "-------------------------------------------------------------------------------------------\n";
+            cout << "|got sync <file> : Recupera los cambios para un archivo en el server y lo sincroniza con el archivo en el cliente\n";
+            cout << "-------------------------------------------------------------------------------------------\n";
+                    
         }
 
     }else if (argc == 4)
@@ -62,6 +79,31 @@ int main(int argc, char *argv[]){
 
         }else{
 
+            if (string(comando2) != "init"){
+                cout << " El segundo argumento no es valido \n";
+                cout << " Verifique escribir bien ** got init **";
+                exit(1);
+
+            }else{
+                //d
+            }
+
+ 
+        }
+        
+    }else if (argc == 5)
+    {
+        /* code */
+    }else{
+        cout << "Error al ingresar el comando...\n";
+        cout << " consultar comando  ** got help **\n";
+        exit(1);
+    }
+
+    return 0;
+}
+
+/*
             printf("Ingrese la ubicacion del archivo a enviar.\n");
             getline(cin, filename1);
             strcpy(filename, filename1.c_str());
@@ -75,6 +117,7 @@ int main(int argc, char *argv[]){
                 perror("[-]Error en socket");
                 exit(1);
             }
+
             printf("[+]Socket creado correctamente \n");
 
             sockaddr_in hint;
@@ -118,17 +161,4 @@ int main(int argc, char *argv[]){
             printf("[+]Archivo enviado.\n");
 
             printf("[+]Cerrando conexion.\n");
-
-        }
-        
-    }else if (argc == 5)
-    {
-        /* code */
-    }else{
-        cout << "Error al ingresar el comando...\n";
-        cout << " consultar comando  ** got help **\n";
-        exit(1);
-    }
-
-    return 0;
-}
+*/
