@@ -44,27 +44,32 @@ int main(int argc, char *argv[]){
         }else if (string(comando2) != "help"){
 
             cout << " El segundo argumento no es valido \n";
-            cout << " Verifique escribir bien ** got help **";
+            cout << " Verifique escribir bien * got help *";
             exit(1);
 
         }else{
 
             cout << "-------------------------------------------------------------------------------------------\n";
-            cout << "|got help: Muestra los comandos y sus funciones                                             \n";
+            cout << "*got help: Muestra los comandos y sus funciones.                                             \n";
             cout << "-------------------------------------------------------------------------------------------\n";
-            cout << "|got init <name>: Instancia un nuevo repositio                                              \n";
+            cout << "*got init <name>: Instancia un nuevo repositio.                                              \n";
             cout << "-------------------------------------------------------------------------------------------\n";
-            cout << "|got add [-A] / [path]: [-A] para agregar todos los archivos, o la ruta del archivo para guardar uno en especifico | \n";
+            cout << "*got add [-A] / [path]: [-A] para agregar todos los archivos, o la ruta del archivo para \n";
+            cout << " guardar uno en especifico.\n";
             cout << "-------------------------------------------------------------------------------------------\n";
-            cout << "|got commit <mensaje> : Envia los archivos agregados y pendientes                           \n";
+            cout << "*got commit <mensaje> : Envia los archivos agregados y pendientes.                         \n";
+            cout << " El tercer argumento debe ser un string(" ").\n";
             cout << "-------------------------------------------------------------------------------------------\n";
-            cout << "|got status : Nos muestra cuales archivos han sido cambiados, agregados o eliminados        \n";
+            cout << "*got status : Nos muestra cuales archivos han sido cambiados, agregados o eliminados.        \n";
             cout << "-------------------------------------------------------------------------------------------\n";
-            cout << "|got rollback <file> <commit> : Permite regresar un archivo en el tiempo a un commit especifico \n";
+            cout << "*got rollback <file> <commit> : Permite regresar un archivo en el tiempo a un commit\n";
+            cout << " especifico.El tercer y cuarto argumento debe ser un string(" ").\n";
             cout << "-------------------------------------------------------------------------------------------\n";
-            cout << "|got reset <file> : Deshace cambios locales para un archivo y lo regresa al ultimo commit    \n";
+            cout << "*got reset <file> : Deshace cambios locales para un archivo y lo regresa al ultimo commit    \n";
+            cout << " El tercer argumento debe ser un string(" ").\n";
             cout << "-------------------------------------------------------------------------------------------\n";
-            cout << "|got sync <file> : Recupera los cambios para un archivo en el server y lo sincroniza con el archivo en el cliente\n";
+            cout << "*got sync <file> : Recupera los cambios para un archivo en el server y lo sincroniza\n";
+            cout << " con el archivo en el cliente. El tercer argumento debe ser un string(" ").\n";
             cout << "-------------------------------------------------------------------------------------------\n";          
         }
 
@@ -78,7 +83,9 @@ int main(int argc, char *argv[]){
 
         }else{
 
-            if (string(comando2) == "init"){
+            if ((string(comando2) == "init") || (string(comando2) == "add") 
+               || (string(comando2) == "commit") || (string(comando2) == "status") 
+               ||(string(comando2) == "reset") || (string(comando2) == "sync")){
                 
                 cout << "nueva : " << palabra;
                 sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -106,7 +113,7 @@ int main(int argc, char *argv[]){
                 char data[SIZE] = {0};
                 dataFull += string(comando2);
                 dataFull += ",";
-
+                dataFull += string(comando3);
 
                 int senRes = send(sockfd, dataFull.c_str(), dataFull.size() + 1, 0);
 
@@ -114,30 +121,74 @@ int main(int argc, char *argv[]){
 
                 printf("[+]Cerrando conexion.\n");
 
-            }else if (string(comando2) == "add"){
-                //Lo que hace el add
-            }else if (string(comando2) == "commit"){
-                //Lo que hace el commit
-            }else if (string(comando2) == "status"){
-                //Lo que hace el status
-            }else if (string(comando2) == "reset"){
-                //Lo que hace el reset
-            }else if (string(comando2) == "sync"){
-                //Lo que hace el sync
+            
             }else{
-                cout << " El segundo argumento no es valido \n";
-                cout << " Verifique escribir bien ** got init lista de comandos necesaria ------**";
+                cout << "El comando no es valido \n";
+                cout << " consultar comando  * got help *\n";
                 exit(1);
             }
         }
         
     }else if (argc == 5)
     {
+        //Validamos que se inicie con el comando got
+        if (string(comando1) != "got"){
+
+            cout << "Error, no uso got para ejecutar los comandos";
+            cout << "!!!..O no ha ingresado comando valido..!!!";
+
+        }else{
+
+            if (string(comando2) == "rollback"){
+                cout << "nueva : " << palabra;
+                sockfd = socket(AF_INET, SOCK_STREAM, 0);
+                if (sockfd < 0){
+                    perror("[-]Error en socket");
+                    exit(1);
+                }
+
+                printf("[+]Socket creado correctamente \n");
+
+                sockaddr_in hint;
+                hint.sin_family = AF_INET;
+                hint.sin_port = htons(puerto);
+                inet_pton(AF_INET, ip, &hint.sin_addr);
+        
+                coneccion = connect(sockfd, (struct sockaddr*)&hint, sizeof(hint));
+                if(coneccion == -1){
+                    perror("[-]Error en el socket");
+                    exit(1);
+                }
+                printf("[+]Conectando al servidor\n");
+
+
+                int n;
+                char data[SIZE] = {0};
+                
+                dataFull += string(comando2);
+                dataFull += ",";
+                dataFull += string(comando3);
+                dataFull += ",";
+                dataFull += string(comando4);
+
+                int senRes = send(sockfd, dataFull.c_str(), dataFull.size() + 1, 0);
+
+                printf("[+]Archivo enviado.\n");
+
+                printf("[+]Cerrando conexion.\n");
+
+            
+            }else{
+                cout << "El comando no es valido \n";
+                cout << " consultar comando  * got help *\n";
+                exit(1);
+            }
+        }
         /* code */
 
     }else{
         cout << "Error al ingresar el comando...\n";
-        cout << " consultar comando  ** got help **\n";
+        cout << " consultar comando  * got help *\n";
         exit(1);
     }
     return 0;
