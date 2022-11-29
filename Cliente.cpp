@@ -12,7 +12,8 @@
 #define puerto 8080
 using namespace std;
 
-string dataFull;
+string dataComando2;
+string dataComando3;
 string filename1;
 
 int main(int argc, char *argv[]){   
@@ -22,6 +23,8 @@ int main(int argc, char *argv[]){
                *comando3 = argv[3],
                *comando4 = argv[4];
 
+    char buf[SIZE];
+
     char *ip = "127.0.0.1";
     //int puerto = 8080;
     int coneccion;
@@ -30,6 +33,7 @@ int main(int argc, char *argv[]){
     FILE *fp;
     char filename[SIZE];
     char palab[SIZE];
+
     string palabra; 
 
     //Validamos cual sera el número de argumentos
@@ -87,7 +91,7 @@ int main(int argc, char *argv[]){
                || (string(comando2) == "commit") || (string(comando2) == "status") 
                ||(string(comando2) == "reset") || (string(comando2) == "sync")){
                 
-                cout << "nueva : " << palabra;
+                //Se conecta o muestra error en dado caso
                 sockfd = socket(AF_INET, SOCK_STREAM, 0);
                 if (sockfd < 0){
                     perror("[-]Error en socket");
@@ -96,11 +100,13 @@ int main(int argc, char *argv[]){
 
                 printf("[+]Socket creado correctamente \n");
 
+                //importante para la coneción al servidor y cliente
                 sockaddr_in hint;
                 hint.sin_family = AF_INET;
                 hint.sin_port = htons(puerto);
                 inet_pton(AF_INET, ip, &hint.sin_addr);
-        
+
+                //Coneción por socket
                 coneccion = connect(sockfd, (struct sockaddr*)&hint, sizeof(hint));
                 if(coneccion == -1){
                     perror("[-]Error en el socket");
@@ -111,13 +117,43 @@ int main(int argc, char *argv[]){
 
                 int n;
                 char data[SIZE] = {0};
-                dataFull += string(comando2);
-                dataFull += ",";
-                dataFull += string(comando3);
 
-                int senRes = send(sockfd, dataFull.c_str(), dataFull.size() + 1, 0);
+                //Se guarda el comando y el mensaje 
+                dataComando2 += string(comando2);
+                dataComando3 += string(comando3);
 
-                printf("[+]Archivo enviado.\n");
+                //Se envia mensaje al servidor con el comando
+                int senRes = send(sockfd, dataComando2.c_str(), dataComando2.size() + 1, 0);
+
+                printf("[+]Comendo enviado.\n");
+
+                memset(buf, 0, SIZE);
+
+                //Validación en caso de tener algún problema
+                int bytesReceived2 = recv(sockfd, buf, 4096, 0);
+                if (bytesReceived2 == -1)
+                {
+                    cout << "Ocurrio un error obteniendo la respuesta del servidor\r\n";
+                }
+
+                //Respuesta desde el servidor
+                cout << "SERVER> " << string(buf, bytesReceived2) << "\r\n";
+
+                senRes = send(sockfd, dataComando3.c_str(), dataComando3.size() + 1, 0);
+                
+                printf("[+]Parametro enviado enviado.\n");
+
+                memset(buf, 0, SIZE);
+
+                //Validación en caso de tener algún problema
+                int bytesReceived = recv(sockfd, buf, 4096, 0);
+                if (bytesReceived == -1)
+                {
+                    cout << "Ocurrio un error obteniendo la respuesta del servidor\r\n";
+                }
+
+                //Respuesta desde el servidor
+                cout << "SERVER> " << string(buf, bytesReceived) << "\r\n";
 
                 printf("[+]Cerrando conexion.\n");
 
@@ -165,14 +201,14 @@ int main(int argc, char *argv[]){
                 int n;
                 char data[SIZE] = {0};
                 
-                dataFull += string(comando2);
+                /*dataFull += string(comando2);
                 dataFull += ",";
                 dataFull += string(comando3);
                 dataFull += ",";
                 dataFull += string(comando4);
 
                 int senRes = send(sockfd, dataFull.c_str(), dataFull.size() + 1, 0);
-
+                */
                 printf("[+]Archivo enviado.\n");
 
                 printf("[+]Cerrando conexion.\n");
