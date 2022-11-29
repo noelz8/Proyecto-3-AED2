@@ -659,9 +659,9 @@ int main()
 
         //Prueba add
         if (comandostring == "add"){
-            cout << "\n Se crea nuevo repopositorio \n";
+            cout << "\n Se guarda nuevo archivo \n";
             
-            string linescomandoAdd = "INSERT INTO" + ParametroString + "(NOMBRE_ARCHIVO) values ('Nuevoarch.txt');";
+            string linescomandoAdd = "INSERT INTO " + ParametroString + " (NOMBRE_ARCHIVO) values ('Nuevoarch.txt');";
             mysql_query (connect,linescomandoAdd.c_str());
             //mysql_query (connect, linescomando.c_str());
             unsigned int i =0;
